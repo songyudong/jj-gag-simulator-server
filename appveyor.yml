@@ -1,0 +1,39 @@
+version: 1.0.{build}
+build_script:
+- cmd: >-
+    git submodule update --init --recursive
+
+    mklink /j 3rd skynet\3rd
+
+    mklink /j lualib-src skynet\lualib-src
+
+    mklink /j service-src skynet\service-src
+
+    mklink /j skynet-src skynet\skynet-src
+
+
+    mklink /j lualib skynet\lualib
+
+    mklink /j service skynet\service
+
+    mklink /j test skynet\test
+
+    mklink /j examples skynet\examples
+
+
+    echo %PATH%
+
+    Set Path=%path%;C:\MinGW\msys\1.0\bin;C:\MinGW\bin
+
+    mingw-get update
+
+    mingw-get install mingw32-pthreads-w32-dev
+
+    make
+
+    7z.exe a skynet_mingw.zip luaclib cservice examples lualib service test platform.dll lua53.dll skynet.dll skynet.exe C:\MinGW\bin\pthreadGC-3.dll C:\MinGW\bin\libgcc_s_dw2-1.dll
+test_script:
+- cmd: skynet.exe autotest\config
+artifacts:
+- path: skynet_mingw.zip
+  name: skynet_mingw
